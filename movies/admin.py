@@ -5,19 +5,20 @@ from django import forms
 from .models import Category, Actor, Genre, Movie, MovieShots, RatingStar, Rating, Reviews
 
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
+from modeltranslation.admin import TranslationAdmin
 
 
 class MovieAdminForm(forms.ModelForm):
-    description = forms.CharField(label='Описание', widget=CKEditorUploadingWidget())
+    description_ru = forms.CharField(label='Описание', widget=CKEditorUploadingWidget())
+    description_en = forms.CharField(label='Описание', widget=CKEditorUploadingWidget())
 
     class Meta:
         model = Movie
         fields = '__all__'
 
 
-
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(TranslationAdmin):
     list_display = ('id', 'name', 'url')
     list_display_links = ('name',)
 
@@ -40,7 +41,7 @@ class MovieShotsInLine(admin.TabularInline):
 
 
 @admin.register(Movie)
-class MovieAdmin(admin.ModelAdmin):
+class MovieAdmin(TranslationAdmin):
     list_display = ('title', 'category', 'url', 'draft')
     list_filter = ('category', 'year')
     search_fields = ('title', 'category__name')
@@ -93,7 +94,7 @@ class MovieAdmin(admin.ModelAdmin):
         self.message_user(request, f'{message_bit}')
 
     publish.short_description = 'Опубликовать'
-    publish.allowed_permissions = ('change', )
+    publish.allowed_permissions = ('change',)
 
     unpublish.short_description = 'Снять с публикации'
     unpublish.allowed_permissions = ('change',)
@@ -108,12 +109,12 @@ class ReviewAdmin(admin.ModelAdmin):
 
 
 @admin.register(Genre)
-class GenreAdmin(admin.ModelAdmin):
+class GenreAdmin(TranslationAdmin):
     list_display = ('name', 'url')
 
 
 @admin.register(Actor)
-class ActorAdmin(admin.ModelAdmin):
+class ActorAdmin(TranslationAdmin):
     list_display = ('name', 'age', 'get_image')
     readonly_fields = ('get_image',)
 
@@ -125,11 +126,11 @@ class ActorAdmin(admin.ModelAdmin):
 
 @admin.register(Rating)
 class RatingAdmin(admin.ModelAdmin):
-    list_display = ('star', 'movie')
+    list_display = ('star', 'movie', 'ip')
 
 
 @admin.register(MovieShots)
-class MovieShotsAdmin(admin.ModelAdmin):
+class MovieShotsAdmin(TranslationAdmin):
     list_display = ('title', 'movie', 'get_image')
     readonly_fields = ('get_image',)
 
